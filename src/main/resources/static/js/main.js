@@ -40,16 +40,19 @@ function addItem() {
 
 function removeItem(listItem, itemId) {
 
-    var dataJson = { "itemId":itemId};
+    //var dataJson = { "itemId":itemId};
 
     console.log(listItem);
     console.log(itemId);
 
+    var requestUrl = "/listItem/" + itemId;
+    console.log(requestUrl);
+
     $.ajax({
         type: "DELETE",
-        url: "/listItem",
+        url: requestUrl,
         contentType: "application/json",
-        data: JSON.stringify(dataJson),
+        //data: JSON.stringify(dataJson),
         success: function (response) {
             console.log('success');
             console.log(response);

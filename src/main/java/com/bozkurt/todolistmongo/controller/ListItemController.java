@@ -1,25 +1,19 @@
 package com.bozkurt.todolistmongo.controller;
 
 import com.bozkurt.todolistmongo.dto.AddItemDto;
-import com.bozkurt.todolistmongo.dto.DeleteItemDto;
 import com.bozkurt.todolistmongo.model.ListItem;
 import com.bozkurt.todolistmongo.model.User;
-import com.bozkurt.todolistmongo.service.ListItemService;
 import com.bozkurt.todolistmongo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ListItemController {
-
-    @Autowired
-    private ListItemService listItemService;
 
     @Autowired
     private UserService userService;
@@ -27,22 +21,26 @@ public class ListItemController {
     @RequestMapping(value = "/listItem", method = RequestMethod.POST)
     public ResponseEntity<ListItem> addItem(Model model, @RequestBody AddItemDto addItemDto) {
 
-        User user = userService.findById("");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
 
-        ListItem listItem = new ListItem();
-        listItem.setText(addItemDto.getItemText());
-        listItem.setStatus("ACTIVE");
-        listItem.setUserList(user.getUserLists().get(0));
+        ListItem item = new ListItem();
+        item.setText(addItemDto.getItemText());
+        item.setStatus("ACTIVE");
+        user.getItems().add(item);
 
-        listItemService.save(listItem);
-
-        return new ResponseEntity<ListItem>(listItem, HttpStatus.CREATED);
+        userService.save(user);
+        return new ResponseEntity<ListItem>(item, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/listItem", method = RequestMethod.DELETE)
-    public ResponseEntity removeItem(Model model, @RequestBody DeleteItemDto deleteItemDto) {
+    @RequestMapping(value = "/listItem/{listItemId}", method = RequestMethod.DELETE)
+    public ResponseEntity removeItem(Model model, @PathVariable String listItemId) {
 
-        listItemService.delete(deleteItemDto.getItemId());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        user.getItems().removeIf(item -> item.getId().equals(listItemId));
+        userService.save(user);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

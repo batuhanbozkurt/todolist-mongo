@@ -36,10 +36,10 @@ public class UserController {
 
         userService.save(user);
 
-        return "redirect:/index";
+        return "redirect:/login";
     }
 
-    @RequestMapping( value = {"/login"}, method = RequestMethod.GET)
+    @RequestMapping( value = {"/", "/login"}, method = RequestMethod.GET)
     public String loginPage(Model model) {
         return "login";
     }

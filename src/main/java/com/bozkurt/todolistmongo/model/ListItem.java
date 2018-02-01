@@ -1,18 +1,18 @@
 package com.bozkurt.todolistmongo.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.springframework.data.annotation.Id;
+import java.util.UUID;
 
 public class ListItem {
-    @Id
-    private String id;
 
-    @JsonBackReference
-    public UserList userList;
+    private String id;
 
     private String text;
 
     private String status;
+
+    public ListItem(){
+        id = UUID.randomUUID().toString();
+    }
 
     public String getId() {
         return id;
@@ -20,14 +20,6 @@ public class ListItem {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public UserList getUserList() {
-        return userList;
-    }
-
-    public void setUserList(UserList userList) {
-        this.userList = userList;
     }
 
     public String getText() {

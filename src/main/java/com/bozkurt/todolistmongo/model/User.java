@@ -2,11 +2,12 @@ package com.bozkurt.todolistmongo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//@Document(collection = "users")
+@Document(collection = "users")
 public class User {
     public User(){
     }
@@ -23,7 +24,7 @@ public class User {
     @JsonIgnore
     private String password;
 
-    private List<UserList> userLists = new ArrayList<>();
+    private List<ListItem> items = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -65,11 +66,11 @@ public class User {
         this.password = password;
     }
 
-    public List<UserList> getUserLists() {
-        return userLists;
+    public List<ListItem> getItems() {
+        return items;
     }
 
-    public void setUserLists(List<UserList> userLists) {
-        this.userLists = userLists;
+    public void setItems(List<ListItem> items) {
+        this.items = items;
     }
 }
